@@ -37,12 +37,12 @@ export class LobbyService {
       include: {
         host: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         players: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
       },
@@ -59,12 +59,12 @@ export class LobbyService {
       include: {
         host: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         players: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         _count: {
@@ -85,12 +85,12 @@ export class LobbyService {
       include: {
         host: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         players: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         match: {
@@ -99,7 +99,7 @@ export class LobbyService {
               include: {
                 player: {
                   include: {
-                    avatar: true,
+                    Avatar: true,
                   },
                 },
               },
@@ -123,12 +123,12 @@ export class LobbyService {
       include: {
         host: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         players: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
       },
@@ -176,12 +176,12 @@ export class LobbyService {
       include: {
         host: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         players: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
       },
@@ -221,12 +221,12 @@ export class LobbyService {
       include: {
         host: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         players: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
       },
@@ -242,12 +242,12 @@ export class LobbyService {
       include: {
         host: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         players: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
       },
@@ -267,12 +267,12 @@ export class LobbyService {
       include: {
         host: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         players: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         match: {
@@ -281,7 +281,7 @@ export class LobbyService {
               include: {
                 player: {
                   include: {
-                    avatar: true,
+                    Avatar: true,
                   },
                 },
               },

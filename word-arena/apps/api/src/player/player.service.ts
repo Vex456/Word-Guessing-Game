@@ -29,7 +29,7 @@ export class PlayerService {
         guestId: createPlayerDto.guestId,
       },
       include: {
-        avatar: true,
+        Avatar: true,
       },
     });
 
@@ -59,7 +59,7 @@ export class PlayerService {
         guestId: `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       },
       include: {
-        avatar: true,
+        Avatar: true,
       },
     });
 
@@ -69,7 +69,7 @@ export class PlayerService {
   async findAll() {
     return this.prisma.player.findMany({
       include: {
-        avatar: true,
+        Avatar: true,
       },
       orderBy: {
         totalPoints: 'desc',
@@ -81,7 +81,7 @@ export class PlayerService {
     const player = await this.prisma.player.findUnique({
       where: { id },
       include: {
-        avatar: true,
+        Avatar: true,
         matches: {
           include: {
             match: {
@@ -110,7 +110,7 @@ export class PlayerService {
       where: { id },
       data: updatePlayerDto,
       include: {
-        avatar: true,
+        Avatar: true,
       },
     });
 
@@ -120,7 +120,7 @@ export class PlayerService {
   async getLeaderboard(limit: number = 50) {
     const players = await this.prisma.player.findMany({
       include: {
-        avatar: true,
+        Avatar: true,
       },
       orderBy: {
         totalPoints: 'desc',
@@ -132,7 +132,7 @@ export class PlayerService {
       rank: index + 1,
       id: player.id,
       displayName: player.displayName,
-      avatar: player.avatar,
+      avatar: player.Avatar,
       points: player.totalPoints,
       wins: player.gamesWon,
       gamesPlayed: player.gamesPlayed,
@@ -146,7 +146,7 @@ export class PlayerService {
     const player = await this.prisma.player.findUnique({
       where: { id: playerId },
       include: {
-        avatar: true,
+        Avatar: true,
       },
     });
 

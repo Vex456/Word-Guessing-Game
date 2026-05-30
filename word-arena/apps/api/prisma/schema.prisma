@@ -24,6 +24,7 @@ model Player {
   longestSurvival Int      @default(0)
   
   // Relations
+  avatar          Avatar   @relation(fields: [avatarId], references: [id])
   matches         MatchPlayer[]
   messages        Message[]
   sentPrivateMessages PrivateMessage[] @relation("sentMessages")
