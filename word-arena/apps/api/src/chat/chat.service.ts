@@ -17,7 +17,7 @@ export class ChatService {
       include: {
         sender: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
       },
@@ -36,12 +36,12 @@ export class ChatService {
       include: {
         sender: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         receiver: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
       },
@@ -71,7 +71,7 @@ export class ChatService {
       include: {
         sender: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
       },
@@ -93,12 +93,12 @@ export class ChatService {
       include: {
         sender: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
         receiver: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
       },

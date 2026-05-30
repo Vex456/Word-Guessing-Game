@@ -39,7 +39,7 @@ export class MatchService {
       include: {
         players: {
           include: {
-            avatar: true,
+            Avatar: true,
           },
         },
       },
