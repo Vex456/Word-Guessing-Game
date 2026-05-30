@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id              String   @id @default(uuid())
+  displayName     String
+  avatarId        String
+  guestId         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Statistics
+  gamesPlayed     Int      @default(0)
+  gamesWon        Int      @default(0)
+  winStreak       Int      @default(0)
+  totalPoints     Int      @default(0)
+  correctWords    Int      @default(0)
+  longestSurvival Int      @default(0)
+  
+  // Relations
+  matches         MatchPlayer[]
+  messages        Message[]
+  sentPrivateMessages PrivateMessage[] @relation("sentMessages")
+  receivedPrivateMessages PrivateMessage[] @relation("receivedMessages")
+  currentLobby    Lobby?   @relation("lobbyPlayers")
+  
+  @@index([displayName])
+  @@index([totalPoints])
+}
+
+model Avatar {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  imageUrl    String
+  category    String   // male, female, robot, wizard, ninja, alien
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  players     Player[]
+  
+  @@index([category])
+}
+
+model Lobby {
+  id            String   @id @default(uuid())
+  code          String   @unique
+  status        LobbyStatus @default(WAITING)
+  hostId        String
+  minPlayers    Int      @default(2)
+  maxPlayers    Int      @default(5)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relations
+  host          Player   @relation(fields: [hostId], references: [id])
+  players       Player[] @relation("lobbyPlayers")
+  match         Match?
+  chatMessages  Message[]
+  
+  @@index([status])
+  @@index([code])
+}
+
+enum LobbyStatus {
+  WAITING
+  STARTING
+  IN_PROGRESS
+  FINISHED
+}
+
+model Match {
+  id              String   @id @default(uuid())
+  lobbyId         String   @unique
+  letter          String
+  status          MatchStatus @default(WAITING)
+  round           Int      @default(1)
+  timerSeconds    Int      @default(10)
+  currentTurnIndex Int     @default(0)
+  winnerId        String?
+  startedAt       DateTime?
+  endedAt         DateTime?
+  createdAt       DateTime @default(now())
+  
+  // Relations
+  lobby           Lobby    @relation(fields: [lobbyId], references: [id])
+  players         MatchPlayer[]
+  usedWords       UsedWord[]
+  
+  @@index([status])
+  @@index([lobbyId])
+}
+
+enum MatchStatus {
+  WAITING
+  STARTING
+  IN_PROGRESS
+  FINISHED
+}
+
+model MatchPlayer {
+  id              String   @id @default(uuid())
+  matchId         String
+  playerId        String
+  turnOrder       Int
+  isEliminated    Boolean  @default(false)
+  isSpectator     Boolean  @default(false)
+  placement       Int?
+  pointsEarned    Int      @default(0)
+  wordsSubmitted  Int      @default(0)
+  roundsSurvived  Int      @default(0)
+  joinedAt        DateTime @default(now())
+  
+  // Relations
+  match           Match    @relation(fields: [matchId], references: [id])
+  player          Player   @relation(fields: [playerId], references: [id])
+  submittedWords  UsedWord[]
+  
+  @@unique([matchId, playerId])
+  @@index([matchId])
+  @@index([playerId])
+}
+
+model UsedWord {
+  id              String   @id @default(uuid())
+  matchId         String
+  matchPlayerId   String
+  word            String
+  round           Int
+  isValid         Boolean  @default(true)
+  submittedAt     DateTime @default(now())
+  
+  // Relations
+  match           Match      @relation(fields: [matchId], references: [id])
+  matchPlayer     MatchPlayer @relation(fields: [matchPlayerId], references: [id])
+  
+  @@unique([matchId, word])
+  @@index([matchId])
+  @@index([word])
+}
+
+model Message {
+  id          String   @id @default(uuid())
+  lobbyId     String?
+  senderId    String
+  content     String
+  messageType MessageType @default(PUBLIC)
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  lobby       Lobby?   @relation(fields: [lobbyId], references: [id])
+  sender      Player   @relation(fields: [senderId], references: [id])
+  
+  @@index([lobbyId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+enum MessageType {
+  PUBLIC
+  PRIVATE
+  SYSTEM
+}
+
+model PrivateMessage {
+  id           String   @id @default(uuid())
+  senderId     String
+  receiverId   String
+  content      String
+  isRead       Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  
+  // Relations
+  sender       Player   @relation(fields: [senderId], references: [id], onDelete: CASCADE)
+  receiver     Player   @relation(fields: [receiverId], references: [id], onDelete: CASCADE)
+  
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+}
+
+model LeaderboardEntry {
+  id          String   @id @default(uuid())
+  playerId    String   @unique
+  rank        Int
+  points      Int
+  wins        Int
+  winRate     Float
+  updatedAt   DateTime @updatedAt
+  
+  // Relation
+  player      Player   @relation(fields: [playerId], references: [id])
+  
+  @@index([rank])
+  @@index([points])
+}
