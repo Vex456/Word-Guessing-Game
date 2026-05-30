@@ -339,4 +339,19 @@ export class MatchService {
     }
     this.activeMatches.delete(matchId);
   }
+
+  async getActiveMatch(lobbyId: string): Promise<MatchState | null> {
+    const match = await this.prisma.match.findFirst({
+      where: {
+        lobbyId,
+        status: MatchStatus.IN_PROGRESS,
+      },
+    });
+
+    if (!match) {
+      return null;
+    }
+
+    return this.activeMatches.get(match.id) || null;
+  }
 }

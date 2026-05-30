@@ -260,4 +260,62 @@ export class LobbyService {
     });
     return { success: true };
   }
+
+  async getLobbyState(lobbyId: string) {
+    const lobby = await this.prisma.lobby.findUnique({
+      where: { id: lobbyId },
+      include: {
+        host: {
+          include: {
+            avatar: true,
+          },
+        },
+        players: {
+          include: {
+            avatar: true,
+          },
+        },
+        match: {
+          include: {
+            players: {
+              include: {
+                player: {
+                  include: {
+                    avatar: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!lobby) {
+      throw new NotFoundException(`Lobby with ID ${lobbyId} not found`);
+    }
+
+    return lobby;
+  }
+
+  async setPlayerReady(lobbyId: string, playerId: string, isReady: boolean) {
+    await this.prisma.player.update({
+      where: { id: playerId },
+      data: { isReady },
+    });
+
+    return this.getLobbyState(lobbyId);
+  }
+
+  async addPlayerToLobby(lobbyId: string, playerId: string) {
+    return this.joinPlayer(lobbyId, playerId);
+  }
+
+  async removePlayerFromLobby(lobbyId: string, playerId: string) {
+    return this.leavePlayer(lobbyId, playerId);
+  }
+
+  async createLobby() {
+    return this.create({ hostId: 'system', minPlayers: 2, maxPlayers: 5 });
+  }
 }

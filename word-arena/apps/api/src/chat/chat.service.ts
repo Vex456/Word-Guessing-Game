@@ -50,6 +50,21 @@ export class ChatService {
     return message;
   }
 
+  async sendMessage(data: { 
+    senderId: string; 
+    content: string; 
+    lobbyId?: string; 
+    receiverId?: string; 
+    messageType?: 'PUBLIC' | 'PRIVATE' | 'SYSTEM' 
+  }) {
+    if (data.receiverId) {
+      return this.sendPrivateMessage(data.senderId, data.receiverId, data.content);
+    } else if (data.lobbyId) {
+      return this.sendPublicMessage(data.lobbyId, data.senderId, data.content);
+    }
+    throw new Error('Either lobbyId or receiverId must be provided');
+  }
+
   async getLobbyMessages(lobbyId: string, limit: number = 50) {
     return this.prisma.message.findMany({
       where: { lobbyId },

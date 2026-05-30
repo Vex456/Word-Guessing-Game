@@ -36,6 +36,36 @@ export class PlayerService {
     return player;
   }
 
+  async createGuestPlayer(data: { displayName: string; avatarId: string; lobbyId?: string }) {
+    // Check for duplicate display names and add suffix if needed
+    let displayName = data.displayName;
+    let counter = 1;
+    let existingPlayer = await this.prisma.player.findFirst({
+      where: { displayName },
+    });
+
+    while (existingPlayer) {
+      displayName = `${data.displayName}#${counter}`;
+      counter++;
+      existingPlayer = await this.prisma.player.findFirst({
+        where: { displayName },
+      });
+    }
+
+    const player = await this.prisma.player.create({
+      data: {
+        displayName,
+        avatarId: data.avatarId,
+        guestId: `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      },
+      include: {
+        avatar: true,
+      },
+    });
+
+    return player;
+  }
+
   async findAll() {
     return this.prisma.player.findMany({
       include: {
